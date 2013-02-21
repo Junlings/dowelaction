@@ -19,12 +19,12 @@ availfilenamelist = ...
 
 
 % load percentage included in the fitting
-start_perc = 0.8;
+start_perc = 0.9;
 end_perc = 0.99;
 
 % geometry for all specimen:
 L_spe = [7,7,9,9,9,7,7,7,7,7,7,7,7,7];
-d_spe = [0.375,0.375,0.375,0.375,0.375,0.375,0.375,0.375,0.375,0.375,0.5,0.5,0.5,0.5];
+ds_spe = [0.375,0.375,0.375,0.375,0.375,0.375,0.375,0.375,0.375,0.375,0.5,0.5,0.5,0.5];
 
 % fitting function
 funhandle = @modelfun_derived;
@@ -37,7 +37,7 @@ resfilenamelist = [1:14];%[14];
 % initial results
 res = zeros(4,length(resfilenamelist));
 
-global L d;
+global L ds;
 
 
 for i=1:length(resfilenamelist)
@@ -46,7 +46,7 @@ for i=1:length(resfilenamelist)
     disp(strcat('fitting file name:',availfilenamelist{ind}));
     % find settings for individual specimen
     L = L_spe(ind);
-    d = d_spe(ind);
+    ds = ds_spe(ind);
     
     % do curve fitting
     [beta1,beta2,beta3,beta_total] = batch_solve_function(availfilenamelist{ind},funhandle,start_perc,end_perc);    

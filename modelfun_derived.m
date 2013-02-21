@@ -1,12 +1,11 @@
 function yhat = modelfun_derived(b,X)
-    global d L;
+    global ds L;
     %d=0.375;          % rebar diameter
     E=29000;          % rebar modulus
-    I=pi*(d^4)/64;    % rebar second moment of inertia
+    I=pi*(ds^4)/64;    % rebar second moment of inertia
     EI = E*I;       
-    d1 = 1;             % half distance of hole
-    dl = d1;
-    
+    d = 1;             % half distance of hole
+    Ld = L - d;
     beta =  b(1);
     [mX,nX] = size(X);
     yhat = zeros(mX,1);
@@ -17,39 +16,12 @@ function yhat = modelfun_derived(b,X)
     for ij = 1:mX
         P0 = X(ij,1);   % first column is load
         xl = X(ij,2);   % second column is displacement
-        Vd = P0/2.0;         % finite length beam end shear load
         
-        M = -Vd*dl;       % finite length beam end moment
-        
-        
-        
-        
-        if xl > d1
-         yt = -0.1e1 / (beta ^ 3) / EI * (-Vd * sinh((beta * L)) * cos((beta * (xl - 1)))...
-             * cosh((beta * (L - xl + 1))) + Vd * sin((beta * L)) * cosh((beta * (xl - 1))) * cos((beta * (L - xl + 1)))...
-             - M * beta * sinh((beta * L)) * cosh((beta * (L - xl + 1))) * sin((beta * (xl - 1))) + M * beta * sinh((beta * L))...
-             * sinh((beta * (L - xl + 1))) * cos((beta * (xl - 1))) - M * beta * sin((beta * L)) * sinh((beta * (xl - 1)))...
-             * cos((beta * (L - xl + 1))) + M * beta * sin((beta * L)) * cosh((beta * (xl - 1))) * sin((beta * (L - xl + 1)))) / (cosh((beta * L)) ^ 2 - 0.2e1 + cos((beta * L)) ^ 2) / 0.2e1;
+        if xl > d
+            yt = 1/8*1/beta^3/EI*P0*(-2*sinh(beta*Ld)*cos(beta*(-xl+d))*cosh(beta*(Ld-xl+d))*sin(beta*Ld)*cos(beta*Ld)+2*sin(beta*Ld)*cosh(beta*(-xl+d))*cos(beta*(Ld-xl+d))*sinh(beta*Ld)*cosh(beta*Ld)+2*cos(beta*(-xl+d))*cosh(beta*(Ld-xl+d))*cosh(beta*Ld)-2*cos(beta*(-xl+d))*cosh(beta*(Ld-xl+d))*cosh(beta*Ld)^3-2*cosh(beta*(-xl+d))*cos(beta*(Ld-xl+d))*cos(beta*Ld)^3+2*cosh(beta*(-xl+d))*cos(beta*(Ld-xl+d))*cos(beta*Ld)-sinh(beta*Ld)*cosh(beta*(Ld-xl+d))*sin(beta*(-xl+d))*cos(beta*Ld)^2-sinh(beta*Ld)*sinh(beta*(Ld-xl+d))*cos(beta*(-xl+d))*cos(beta*Ld)^2-sin(beta*Ld)*sinh(beta*(-xl+d))*cos(beta*(Ld-xl+d))*cos(beta*Ld)^2-sin(beta*Ld)*cosh(beta*(-xl+d))*sin(beta*(Ld-xl+d))*cos(beta*Ld)^2+sinh(beta*Ld)*cosh(beta*(Ld-xl+d))*sin(beta*(-xl+d))*cosh(beta*Ld)^2+sinh(beta*Ld)*sinh(beta*(Ld-xl+d))*cos(beta*(-xl+d))*cosh(beta*Ld)^2+sin(beta*Ld)*sinh(beta*(-xl+d))*cos(beta*(Ld-xl+d))*cosh(beta*Ld)^2+sin(beta*Ld)*cosh(beta*(-xl+d))*sin(beta*(Ld-xl+d))*cosh(beta*Ld)^2-2*sinh(beta*Ld)*cos(beta*(-xl+d))*cosh(beta*(Ld-xl+d))*d*beta*cos(beta*Ld)^2-2*sinh(beta*Ld)*cos(beta*(-xl+d))*cosh(beta*(Ld-xl+d))*d*beta*cosh(beta*Ld)^2+2*sin(beta*Ld)*cosh(beta*(-xl+d))*cos(beta*(Ld-xl+d))*d*beta*cos(beta*Ld)^2+2*sin(beta*Ld)*cosh(beta*(-xl+d))*cos(beta*(Ld-xl+d))*d*beta*cosh(beta*Ld)^2-d^2*beta^2*sinh(beta*Ld)*cosh(beta*(Ld-xl+d))*sin(beta*(-xl+d))*cos(beta*Ld)^2-d^2*beta^2*sinh(beta*Ld)*sinh(beta*(Ld-xl+d))*cos(beta*(-xl+d))*cos(beta*Ld)^2-d^2*beta^2*sin(beta*Ld)*sinh(beta*(-xl+d))*cos(beta*(Ld-xl+d))*cos(beta*Ld)^2-d^2*beta^2*sin(beta*Ld)*cosh(beta*(-xl+d))*sin(beta*(Ld-xl+d))*cos(beta*Ld)^2-d^2*beta^2*sinh(beta*Ld)*cosh(beta*(Ld-xl+d))*sin(beta*(-xl+d))*cosh(beta*Ld)^2-d^2*beta^2*sinh(beta*Ld)*sinh(beta*(Ld-xl+d))*cos(beta*(-xl+d))*cosh(beta*Ld)^2-d^2*beta^2*sin(beta*Ld)*sinh(beta*(-xl+d))*cos(beta*(Ld-xl+d))*cosh(beta*Ld)^2-d^2*beta^2*sin(beta*Ld)*cosh(beta*(-xl+d))*sin(beta*(Ld-xl+d))*cosh(beta*Ld)^2-4*sin(beta*Ld)*cosh(beta*(-xl+d))*cos(beta*(Ld-xl+d))*d*beta+2*d^2*beta^2*sin(beta*Ld)*sinh(beta*(-xl+d))*cos(beta*(Ld-xl+d))+2*d^2*beta^2*sin(beta*Ld)*cosh(beta*(-xl+d))*sin(beta*(Ld-xl+d))+4*sinh(beta*Ld)*cos(beta*(-xl+d))*cosh(beta*(Ld-xl+d))*d*beta+2*d^2*beta^2*sinh(beta*Ld)*cosh(beta*(Ld-xl+d))*sin(beta*(-xl+d))+2*d^2*beta^2*sinh(beta*Ld)*sinh(beta*(Ld-xl+d))*cos(beta*(-xl+d)))/(-4*d*beta*cosh(beta*Ld)^2+2*d*beta*cosh(beta*Ld)^2*cos(beta*Ld)^2+4*d*beta-4*d*beta*cos(beta*Ld)^2+sin(beta*Ld)*cos(beta*Ld)*cosh(beta*Ld)^2-2*sin(beta*Ld)*cos(beta*Ld)-2*sinh(beta*Ld)*cosh(beta*Ld)+sinh(beta*Ld)*cosh(beta*Ld)*cos(beta*Ld)^2+d*beta*cosh(beta*Ld)^4+sinh(beta*Ld)*cosh(beta*Ld)^3+d*beta*cos(beta*Ld)^4+sin(beta*Ld)*cos(beta*Ld)^3);
 
-        elseif 0<= xl <= d1
-            yt = ((2 * beta ^ 3 * dl ^ 4 * Vd) - 0.3e1 * (xl ^ 2) * beta * Vd * sinh((beta * L))...
-                * sin((beta * (dl - 1))) * cosh((beta * (L - dl + 1))) - 0.3e1 * (xl ^ 2) * beta * Vd * sinh((beta * L)) * cos((beta * (dl - 1))) * sinh((beta * (L - dl + 1)))...
-                - 0.3e1 * (xl ^ 2) * beta * Vd * sin((beta * L)) * sinh((beta * (dl - 1))) * cos((beta * (L - dl + 1))) - 0.3e1 * (xl ^ 2) * beta * Vd * sin((beta * L))...
-                * cosh((beta * (dl - 1))) * sin((beta * (L - dl + 1))) + 0.6e1 * (xl ^ 2) * (beta ^ 2) * M * sinh((beta * L)) * cosh((beta * (L - dl + 1)))...
-                * cos((beta * (dl - 1))) + 0.6e1 * (xl ^ 2) * (beta ^ 2) * M * sin((beta * L)) * cosh((beta * (dl - 1))) * cos((beta * (L - dl + 1)))...
-                - 0.6e1 * sinh((beta * L)) * (beta ^ 2) * (dl ^ 2) * M * cosh((beta * (L - dl + 1))) * cos((beta * (dl - 1)))...
-                + 0.6e1 * dl * M * beta * sinh((beta * L)) * cosh((beta * (L - dl + 1))) * sin((beta * (dl - 1))) + 0.3e1 * sinh((beta * L))...
-                * beta * (dl ^ 2) * Vd * cos((beta * (dl - 1))) * sinh((beta * (L - dl + 1))) + 0.3e1 * sinh((beta * L)) * beta * (dl ^ 2) * Vd * sin((beta * (dl - 1))) * cosh((beta * (L - dl + 1)))...
-                - 0.6e1 * dl * M * beta * sinh((beta * L)) * sinh((beta * (L - dl + 1))) * cos((beta * (dl - 1))) - 0.6e1 * (beta ^ 2)...
-                * (dl ^ 2) * M * sin((beta * L)) * cosh((beta * (dl - 1))) * cos((beta * (L - dl + 1))) - 0.6e1 * dl * M * beta * sin((beta * L))...
-                * cosh((beta * (dl - 1))) * sin((beta * (L - dl + 1))) + 0.3e1 * beta * (dl ^ 2) * Vd * sin((beta * L)) * sinh((beta * (dl - 1)))...
-                * cos((beta * (L - dl + 1))) + 0.6e1 * dl * M * beta * sin((beta * L)) * sinh((beta * (dl - 1))) * cos((beta * (L - dl + 1)))...
-                + 0.3e1 * beta * (dl ^ 2) * Vd * sin((beta * L)) * cosh((beta * (dl - 1))) * sin((beta * (L - dl + 1))) + (4 * Vd * xl ^ 3 * dl * beta ^ 3)...
-                + 0.6e1 * dl * Vd * sinh((beta * L)) * cos((beta * (dl - 1))) * cosh((beta * (L - dl + 1))) - 0.6e1 * dl * Vd * sin((beta * L))...
-                * cosh((beta * (dl - 1))) * cos((beta * (L - dl + 1))) - (beta ^ 3) * (dl ^ 4) * Vd * cosh((beta * L)) ^ 2 - (beta ^ 3) * (dl ^ 4)...
-                * Vd * cos((beta * L)) ^ 2 - 0.2e1 * Vd * (xl ^ 3) * dl * (beta ^ 3) * cosh((beta * L)) ^ 2 - 0.2e1 * Vd * (xl ^ 3) * dl * (beta ^ 3)...
-                * cos((beta * L)) ^ 2 + 0.3e1 * (xl ^ 2) * (beta ^ 3) * (dl ^ 2) * Vd * cosh((beta * L)) ^ 2 + 0.3e1 * (xl ^ 2) * (beta ^ 3) * (dl ^ 2)...
-                * Vd * cos((beta * L)) ^ 2 - (6 * xl ^ 2 * beta ^ 3 * dl ^ 2 * Vd)) / EI / dl / (beta ^ 3) / (cosh((beta * L)) ^ 2 - 0.2e1 + cos((beta * L)) ^ 2) / 0.12e2;
+        elseif 0<= xl <= d
+            yt = -1/24*(-3*xl^2*beta^2*cosh(beta*Ld)^2+2*xl^3*beta^4*d*cosh(beta*Ld)^2-3*xl^2*beta^4*d^2*cosh(beta*Ld)^2+6*d^2*beta^2*cosh(beta*Ld)^2+3*cosh(beta*Ld)^2+d^4*beta^4*cosh(beta*Ld)^2+2*xl^3*beta^3*sinh(beta*Ld)*cosh(beta*Ld)+6*beta*d*sinh(beta*Ld)*cosh(beta*Ld)-6*xl^2*beta^3*d*cosh(beta*Ld)*sinh(beta*Ld)+4*d^3*beta^3*sinh(beta*Ld)*cosh(beta*Ld)-2*d^4*beta^4-4*xl^3*beta^4*d+2*xl^3*beta^3*sin(beta*Ld)*cos(beta*Ld)+6*xl^2*beta^4*d^2-6*xl^2*beta^3*d*cos(beta*Ld)*sin(beta*Ld)+d^4*beta^4*cos(beta*Ld)^2+3*xl^2*beta^2*cos(beta*Ld)^2-6*d^2*beta^2*cos(beta*Ld)^2+4*d^3*beta^3*sin(beta*Ld)*cos(beta*Ld)+2*xl^3*beta^4*d*cos(beta*Ld)^2-3*xl^2*beta^4*d^2*cos(beta*Ld)^2+3*cos(beta*Ld)^2-6*beta*d*sin(beta*Ld)*cos(beta*Ld))*P0/beta^3/EI/(-2*d*beta+d*beta*cos(beta*Ld)^2+d*beta*cosh(beta*Ld)^2+sin(beta*Ld)*cos(beta*Ld)+sinh(beta*Ld)*cosh(beta*Ld));
             
         elseif -1 <= xl < 0
             print 'error, now only consider the positive side, get negative location'
@@ -61,7 +33,7 @@ function yhat = modelfun_derived(b,X)
 
 
     
-        yhat(ij) = yt;   
+        yhat(ij) = -yt;   
         
     end 
 

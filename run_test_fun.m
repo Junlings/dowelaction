@@ -1,14 +1,14 @@
 
 clear;
 close all;
+L = 7;
+Loc = 0:L/100:L;
 
-Loc = 0:0.001:6;
-
-FF = 1.5*ones(length(Loc),1);
+FF = 2*ones(length(Loc),1);
 X = [FF, Loc' ];
 
 
-b =1.0;
+b =0.5;
 
 yhat = modelfun_derived(b,X);
 yhat2 = modelfun_infinite(b,X);
